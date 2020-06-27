@@ -232,7 +232,7 @@ def test_multiple_dataloaders_passed_to_fit(tmpdir, ckpt_path):
         default_root_dir=tmpdir,
         max_epochs=1,
         limit_val_batches=0.1,
-        limit_train_batches=0.2
+        limit_train_batches=0.2,
     )
     fit_options = dict(train_dataloader=model.dataloader(train=True),
                        val_dataloaders=[model.dataloader(train=False),
@@ -336,7 +336,7 @@ def test_mixing_of_dataloader_options(tmpdir, ckpt_path):
         default_root_dir=tmpdir,
         max_epochs=1,
         limit_val_batches=0.1,
-        limit_train_batches=0.2
+        limit_train_batches=0.2,
     )
 
     # fit model
@@ -453,13 +453,6 @@ def test_warning_with_few_workers(tmpdir, ckpt_path):
     model = EvalModelTemplate()
 
     # logger file to get meta
-    trainer_options = dict(
-        default_root_dir=tmpdir,
-        max_epochs=1,
-        limit_val_batches=0.1,
-        limit_train_batches=0.2
-    )
-
     train_dl = model.dataloader(train=True)
     train_dl.num_workers = 0
 
@@ -471,7 +464,12 @@ def test_warning_with_few_workers(tmpdir, ckpt_path):
 
     fit_options = dict(train_dataloader=train_dl,
                        val_dataloaders=val_dl)
-    trainer = Trainer(**trainer_options)
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        max_epochs=1,
+        limit_val_batches=0.1,
+        limit_train_batches=0.2,
+    )
 
     # fit model
     with pytest.warns(UserWarning, match='train'):
@@ -488,7 +486,7 @@ def test_warning_with_few_workers(tmpdir, ckpt_path):
 
 
 @pytest.mark.skipif(torch.cuda.device_count() < 2, reason='Test requires multiple GPUs')
-def test_dataloader_reinit_for_subclass():
+def test_dataloader_reinit_for_subclass(tmpdir):
 
     class CustomDataLoader(torch.utils.data.DataLoader):
         def __init__(self, dataset, batch_size=1, shuffle=False, sampler=None,
@@ -505,6 +503,7 @@ def test_dataloader_reinit_for_subclass():
         gpus=[0, 1],
         num_nodes=1,
         distributed_backend='ddp',
+        default_root_dir=tmpdir,
     )
 
     class CustomDummyObj:
@@ -577,6 +576,7 @@ def test_batch_size_smaller_than_num_gpus(tmpdir):
         limit_train_batches=0.1,
         limit_val_batches=0,
         gpus=num_gpus,
+        default_root_dir=tmpdir,
     )
 
     # we expect the reduction for the metrics also to happen on the last batch

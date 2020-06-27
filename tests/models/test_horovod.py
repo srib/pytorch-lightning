@@ -146,7 +146,8 @@ def test_horovod_transfer_batch_to_gpu(tmpdir):
 def test_horovod_multi_optimizer(tmpdir):
     model = TestGAN(**EvalModelTemplate.get_default_hparams())
 
-    trainer_options = dict(
+    # fit model
+    trainer = Trainer(
         default_root_dir=str(tmpdir),
         progress_bar_refresh_rate=0,
         max_epochs=1,
@@ -155,9 +156,6 @@ def test_horovod_multi_optimizer(tmpdir):
         deterministic=True,
         distributed_backend='horovod',
     )
-
-    # fit model
-    trainer = Trainer(**trainer_options)
     result = trainer.fit(model)
     assert result == 1, 'model failed to complete'
 

@@ -39,8 +39,8 @@ def test_amp_multi_gpu(tmpdir, backend):
     tutils.set_random_master_port()
 
     model = EvalModelTemplate()
-
-    trainer_options = dict(
+    # tutils.run_model_test(trainer_options, model)
+    trainer = Trainer(
         default_root_dir=tmpdir,
         max_epochs=1,
         # gpus=2,
@@ -48,9 +48,6 @@ def test_amp_multi_gpu(tmpdir, backend):
         distributed_backend=backend,
         precision=16,
     )
-
-    # tutils.run_model_test(trainer_options, model)
-    trainer = Trainer(**trainer_options)
     result = trainer.fit(model)
     assert result
 
@@ -66,17 +63,15 @@ def test_multi_gpu_wandb(tmpdir, backend):
     model = EvalModelTemplate()
     logger = WandbLogger(name='utest')
 
-    trainer_options = dict(
+    # tutils.run_model_test(trainer_options, model)
+    trainer = Trainer(
         default_root_dir=tmpdir,
         max_epochs=1,
         gpus=2,
         distributed_backend=backend,
         precision=16,
         logger=logger,
-
     )
-    # tutils.run_model_test(trainer_options, model)
-    trainer = Trainer(**trainer_options)
     result = trainer.fit(model)
     assert result
     trainer.test(model)
@@ -107,6 +102,7 @@ def test_amp_gpu_ddp_slurm_managed(tmpdir):
         precision=16,
         checkpoint_callback=checkpoint,
         logger=logger,
+        default_root_dir=tmpdir,
     )
     trainer.is_slurm_managing_tasks = True
     result = trainer.fit(model)
