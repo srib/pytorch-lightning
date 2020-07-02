@@ -20,8 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Removed auto val reduce ([#2462](https://github.com/PyTorchLightning/pytorch-lightning/pull/2462))
 
-
 ### Fixed
+
+- Fixed global_step increment ([#2455](https://github.com/PyTorchLightning/pytorch-lightning/pull/2455))
 
 
 ## [0.8.4] - 2020-07-01
