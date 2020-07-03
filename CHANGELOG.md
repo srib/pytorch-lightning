@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Fixed global_step increment ([#2455](https://github.com/PyTorchLightning/pytorch-lightning/pull/2455))
 
+- Fixed TPU hanging example ([#2488](https://github.com/PyTorchLightning/pytorch-lightning/pull/2488))
+
 
 ## [0.8.4] - 2020-07-01
 
